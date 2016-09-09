@@ -1,6 +1,6 @@
 This script will generate a unique identifier consisting by default of 3 characters, but does support more characters.
 
-The unique identifier sequence starts at 000, 001, ... , 009, 00A, 00B, ... , 00Z, 010, 011, .. , 0ZZ, 100, 101, etc.
+The unique identifier sequence starts at 000, 001, ... , 009, 00A, 00B, ... , 00Z, 010, 011, .. , 0ZZ, 100, 101, ... , ZZY, ZZZ.
 
 The class is instantiated with two arguments:
 
@@ -11,3 +11,7 @@ last_generated_value: either nil or a string representation of the last value ge
 number_of_values_to_generate: a integer specifying how many values to generate
 
 Note, there is no data validation or sanitization of initialization arguments supplied to script.
+
+The generate method will return the collection of generated values
+
+The get_next_value method will return either the next value in the sequence or nil if no furter values are possible

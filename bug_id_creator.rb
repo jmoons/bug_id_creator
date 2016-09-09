@@ -8,6 +8,7 @@ class BugIdCreator
     @last_generated_value         = last_generated_value
     @number_of_values_to_generate = number_of_values_to_generate
     @out_of_values                = false
+    @generated_value_collection   = []
   end
 
   def generate
@@ -17,38 +18,39 @@ class BugIdCreator
 
       @last_generated_value ? next_value = get_next_value : next_value = "000"
 
-      puts next_value.inspect if next_value
+      @generated_value_collection << next_value if next_value
 
       @last_generated_value = next_value
     end
+    @generated_value_collection.each{ |value| puts value}
   end
 
   def get_next_value
-    @last_generated_value.upcase
-    split_value = @last_generated_value.split(//)
+    working_value       = @last_generated_value.upcase
+    working_value_array = working_value.split(//)
+    working_index       = working_value_array.length - 1
+    done                = false
 
-    third_position_candidate_character = get_next_character(split_value[2])
-    if third_position_candidate_character
-      split_value[2] = third_position_candidate_character
-    else
-      split_value[2] = ARRAY_OF_VALUES[0]
-      second_position_candidate_character = get_next_character(split_value[1])
-      if second_position_candidate_character
-        split_value[1] = second_position_candidate_character
+    while !done do
+      candidate_character = get_next_character( working_value_array[working_index] )
+      if candidate_character
+        # No rollover needed
+        working_value_array[working_index] = candidate_character
+        done = true
       else
-        split_value[1] = ARRAY_OF_VALUES[0]
-        first_position_candidate_character = get_next_character(split_value[0])
-        if first_position_candidate_character
-          split_value[0] = first_position_candidate_character
-        else
-          puts "OUT OF VALUES"
-          @out_of_values = true
+        # Value roll-over
+        working_value_array[working_index] = ARRAY_OF_VALUES[0]
+        working_index -= 1
+        if (working_index < 0)
+          # No further permutations are available, we are out of characters here
+          done            = true
+          @out_of_values  = true
           return
         end
       end
     end
 
-    split_value.join
+    working_value_array.join
 
   end
 
@@ -57,5 +59,5 @@ class BugIdCreator
   end
 end
 
-# BugIdCreator.new(nil, 10).generate
-BugIdCreator.new("ZZT", 10).generate
+BugIdCreator.new(nil, 46656).generate
+# BugIdCreator.new("00", 36).generate
