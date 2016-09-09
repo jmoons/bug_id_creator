@@ -1,5 +1,7 @@
 class BugIdCreator
 
+  attr_reader :generated_value_collection
+
   LETTER_RANGE    = ("A" .. "Z")
   NUMBER_RANGE    = ("0" .. "9")
   ARRAY_OF_VALUES = NUMBER_RANGE.to_a.concat(LETTER_RANGE.to_a)
@@ -7,22 +9,31 @@ class BugIdCreator
   def initialize(last_generated_value, number_of_values_to_generate)
     @last_generated_value         = last_generated_value
     @number_of_values_to_generate = number_of_values_to_generate
-    @out_of_values                = false
     @generated_value_collection   = []
+
+    generate
   end
+
+  def print_collection
+    @generated_value_collection.each{ |value| puts value}
+  end
+
+  private
 
   def generate
     (1 .. @number_of_values_to_generate).each do |iteration|
 
-      break if @out_of_values
-
       @last_generated_value ? next_value = get_next_value : next_value = "000"
 
-      @generated_value_collection << next_value if next_value
+      # If next_value is nil, we have reached the end of all possible values
+      break unless next_value
+
+      @generated_value_collection << next_value
 
       @last_generated_value = next_value
+
     end
-    @generated_value_collection.each{ |value| puts value}
+
   end
 
   def get_next_value
@@ -41,12 +52,11 @@ class BugIdCreator
         # Value roll-over
         working_value_array[working_index] = ARRAY_OF_VALUES[0]
         working_index -= 1
-        if (working_index < 0)
-          # No further permutations are available, we are out of characters here
-          done            = true
-          @out_of_values  = true
-          return
-        end
+
+        # If working index is negative, we have no
+        # further permutations available, we are out of characters here
+        return if (working_index < 0)
+
       end
     end
 
@@ -59,5 +69,5 @@ class BugIdCreator
   end
 end
 
-BugIdCreator.new(nil, 46656).generate
-# BugIdCreator.new("00", 36).generate
+BugIdCreator.new(nil, 46658).print_collection
+# BugIdCreator.new("00", 36).print_collection
