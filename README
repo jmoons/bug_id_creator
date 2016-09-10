@@ -2,16 +2,15 @@ This script will generate a collection of unique identifiers in sequence consist
 
 The unique identifier sequence starts at 000, 001, ... , 009, 00A, 00B, ... , 00Z, 010, 011, .. , 0ZZ, 100, 101, ... , ZZY, ZZZ.
 
-The class is instantiated with two arguments:
+The class is instantiated with a hash of three possible arguments:
+  last_generated_value - a string representation of the last value generated
+  number_of_characters - an integer specifying the number of characters from which to create a sequence. Defaults to 3.
+  number_of_values_to_generate - an integer specifying how many values to generate in the sequence. Defaults to 0.
 
-last_generated_value: either nil or a string representation of the last value generated
-  If nil - the script will begin its value generation with 000
-  If not nil - the script will begin its value generation with the next identifier in the sequence
-
-number_of_values_to_generate: a integer specifying how many values to generate
+If last_generated_value is specified, arguments for number_of_characters and number_of_values_to_generate are ignored.
 
 Note, there is no data validation or sanitization of initialization arguments supplied to script.
 
-The generate method will return the collection of generated values
+The collection of generated values is accessible as the read-only instance variable generated_value_collection
 
-The get_next_value method will return either the next value in the sequence or nil if no further values are possible
+The public method print_collection prints, newline delimited, each value of the sequence

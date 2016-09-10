@@ -6,9 +6,10 @@ class BugIdCreator
   NUMBER_RANGE    = ("0" .. "9")
   ARRAY_OF_VALUES = NUMBER_RANGE.to_a.concat(LETTER_RANGE.to_a)
 
-  def initialize(last_generated_value, number_of_values_to_generate)
-    @last_generated_value         = last_generated_value
-    @number_of_values_to_generate = number_of_values_to_generate
+  def initialize( config_options_hash = {} )
+    @last_generated_value         = config_options_hash[:last_generated_value]
+    @number_of_values_to_generate = config_options_hash[:number_of_values_to_generate] || 0
+    @number_of_characters         = config_options_hash[:number_of_characters] || 3
     @generated_value_collection   = []
 
     generate
@@ -23,7 +24,7 @@ class BugIdCreator
   def generate
     (1 .. @number_of_values_to_generate).each do |iteration|
 
-      @last_generated_value ? next_value = get_next_value : next_value = "000"
+      @last_generated_value ? next_value = get_next_value : next_value = ("0" * @number_of_characters)
 
       # If next_value is nil, we have reached the end of all possible values
       break unless next_value
@@ -69,5 +70,10 @@ class BugIdCreator
   end
 end
 
-BugIdCreator.new(nil, 46658).print_collection
-# BugIdCreator.new("00", 36).print_collection
+# BugIdCreator.new(nil, 46658).print_collection
+config_options = { last_generated_value: nil,
+                   number_of_characters: 5,
+                   number_of_values_to_generate: 10
+                 }
+
+BugIdCreator.new(config_options).print_collection
